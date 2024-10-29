@@ -42,9 +42,7 @@ public class AuthService {
         );
         User savedUser = userRepository.save(newUser);
 
-        String bearerToken = jwtUtil.createToken(savedUser.getId(), savedUser.getEmail(), userRole);
-
-        return new SignupResponse(bearerToken);
+        return new SignupResponse(createJwtToken(savedUser));
     }
 
     public SigninResponse signin(SigninRequest signinRequest) {
@@ -55,8 +53,10 @@ public class AuthService {
             throw new AuthException("잘못된 비밀번호입니다.");
         }
 
-        String bearerToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getUserRole());
+        return new SigninResponse(createJwtToken(user));
+    }
 
-        return new SigninResponse(bearerToken);
+    private String createJwtToken(User user) {
+        return jwtUtil.createToken(user.getId(), user.getEmail(), user.getUserRole());
     }
 }
