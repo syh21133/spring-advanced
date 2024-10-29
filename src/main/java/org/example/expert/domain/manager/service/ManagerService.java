@@ -33,8 +33,7 @@ public class ManagerService {
         ManagerSaveRequest managerSaveRequest) {
 
         User user = User.fromAuthUser(authUser);
-        Todo todo = todoRepository.findById(todoId)
-            .orElseThrow(() -> new InvalidRequestException("Todo not found"));
+        Todo todo = findByTodoId(todoId);
 
         if (!ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId())) {
             throw new InvalidRequestException("담당자를 등록하려고 하는 유저가 일정을 만든 유저가 유효하지 않습니다.");
@@ -57,8 +56,7 @@ public class ManagerService {
     }
 
     public List<ManagerResponse> getManagers(long todoId) {
-        Todo todo = todoRepository.findById(todoId)
-            .orElseThrow(() -> new InvalidRequestException("Todo not found"));
+        Todo todo = findByTodoId(todoId);
 
         List<Manager> managerList = managerRepository.findByTodoIdWithUser(todo.getId());
 
@@ -78,8 +76,7 @@ public class ManagerService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new InvalidRequestException("User not found"));
 
-        Todo todo = todoRepository.findById(todoId)
-            .orElseThrow(() -> new InvalidRequestException("Todo not found"));
+        Todo todo = findByTodoId(todoId);
 
         if (todo.getUser() == null || !ObjectUtils.nullSafeEquals(user.getId(),
             todo.getUser().getId())) {
@@ -94,5 +91,10 @@ public class ManagerService {
         }
 
         managerRepository.delete(manager);
+    }
+
+    private Todo findByTodoId(long todoId) {
+        return todoRepository.findById(todoId)
+            .orElseThrow(() -> new InvalidRequestException("Todo not found"));
     }
 }
