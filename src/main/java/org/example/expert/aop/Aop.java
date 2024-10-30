@@ -21,16 +21,16 @@ public class Aop {
         this.request = request;
     }
 
-    @Pointcut("execution(* org.example.expert.domain.comment.controller.CommentAdminController.*(..))")
-    private void comment() {
+    @Pointcut("execution(* org.example.expert.domain.comment.controller.CommentAdminController.deleteComment(..))")
+    private void deleteComment() {
     }
 
-    @Pointcut("execution(* org.example.expert.domain.user.controller.UserAdminController.*(..))")
-    private void user() {
+    @Pointcut("execution(* org.example.expert.domain.user.controller.UserAdminController.changeUserRole(..))")
+    private void changeUserRole() {
     }
 
 
-    @Around("comment() || user()")
+    @Around("deleteComment() || changeUserRole()")
     public Object logAdminAccess(ProceedingJoinPoint joinPoint) throws Throwable {
 
         String userId = request.getUserPrincipal() != null ? request.getUserPrincipal().getName()
